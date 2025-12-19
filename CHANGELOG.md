@@ -32,7 +32,7 @@
 - BREAKING CHANGE: Bump the minimum supported version of `sdwan_policy_object_policer` to `20.15.0`
 - BREAKING CHANGE: Bump the minimum supported version of `sdwan_policy_object_tloc_list` to `20.15.0`
 - BREAKING CHANGE: Bump the minimum supported version of `sdwan_application_priority_traffic_policy_policy` to `20.15.0`
-- Add warning when `sdwan_attach_feature_device_template` operations are skipped due to concurrent API activity
+- Implement device-specific locking for `sdwan_attach_feature_device_template` to prevent concurrent operations on the same device
 
 ## 0.8.1
 

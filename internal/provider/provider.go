@@ -55,9 +55,11 @@ type SdwanProviderModel struct {
 
 // SdwanProviderData describes the data maintained by the provider.
 type SdwanProviderData struct {
-	Client      *sdwan.Client
-	UpdateMutex *sync.Mutex
-	TaskTimeout *int64
+	Client           *sdwan.Client
+	UpdateMutex      *sync.Mutex
+	DeviceLocks      *sync.Map   // Map of device IDs to mutexes
+	DeviceLocksMutex *sync.Mutex // Protects the device locks map
+	TaskTimeout      *int64
 }
 
 // Metadata returns the provider type name.
@@ -273,7 +275,13 @@ func (p *SdwanProvider) Configure(ctx context.Context, req provider.ConfigureReq
 		return
 	}
 
-	data := SdwanProviderData{Client: &c, UpdateMutex: &sync.Mutex{}, TaskTimeout: &taskTimeout}
+	data := SdwanProviderData{
+		Client:           &c,
+		UpdateMutex:      &sync.Mutex{},
+		DeviceLocks:      &sync.Map{},
+		DeviceLocksMutex: &sync.Mutex{},
+		TaskTimeout:      &taskTimeout,
+	}
 	resp.DataSourceData = &data
 	resp.ResourceData = &data
 }

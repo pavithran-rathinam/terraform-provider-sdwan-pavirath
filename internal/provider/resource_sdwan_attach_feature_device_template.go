@@ -21,6 +21,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"sync"
 
 	"github.com/CiscoDevNet/terraform-provider-sdwan/internal/provider/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -43,8 +44,10 @@ func NewAttachFeatureDeviceTemplateResource() resource.Resource {
 }
 
 type AttachFeatureDeviceTemplateResource struct {
-	client      *sdwan.Client
-	taskTimeout *int64
+	client           *sdwan.Client
+	deviceLocks      *sync.Map
+	deviceLocksMutex *sync.Mutex
+	taskTimeout      *int64
 }
 
 func (r *AttachFeatureDeviceTemplateResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -95,7 +98,29 @@ func (r *AttachFeatureDeviceTemplateResource) Configure(_ context.Context, req r
 	}
 
 	r.client = req.ProviderData.(*SdwanProviderData).Client
+	r.deviceLocks = req.ProviderData.(*SdwanProviderData).DeviceLocks
+	r.deviceLocksMutex = req.ProviderData.(*SdwanProviderData).DeviceLocksMutex
 	r.taskTimeout = req.ProviderData.(*SdwanProviderData).TaskTimeout
+}
+
+// Helper function to acquire locks for all devices in the list
+func (r *AttachFeatureDeviceTemplateResource) lockDevices(deviceIds []string) {
+	for _, deviceId := range deviceIds {
+		// Get or create a mutex for this device
+		mutexInterface, _ := r.deviceLocks.LoadOrStore(deviceId, &sync.Mutex{})
+		mutex := mutexInterface.(*sync.Mutex)
+		mutex.Lock()
+	}
+}
+
+// Helper function to release locks for all devices in the list
+func (r *AttachFeatureDeviceTemplateResource) unlockDevices(deviceIds []string) {
+	for _, deviceId := range deviceIds {
+		if mutexInterface, ok := r.deviceLocks.Load(deviceId); ok {
+			mutex := mutexInterface.(*sync.Mutex)
+			mutex.Unlock()
+		}
+	}
 }
 
 func (r *AttachFeatureDeviceTemplateResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -107,6 +132,15 @@ func (r *AttachFeatureDeviceTemplateResource) Create(ctx context.Context, req re
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	// Acquire device-specific locks
+	deviceIds := make([]string, len(plan.Devices))
+	for i, device := range plan.Devices {
+		deviceIds[i] = device.Id.ValueString()
+	}
+	tflog.Debug(ctx, fmt.Sprintf("Acquiring locks for devices Create: %v", deviceIds))
+	r.lockDevices(deviceIds)
+	defer r.unlockDevices(deviceIds)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Id.ValueString()))
 
@@ -182,6 +216,21 @@ func (r *AttachFeatureDeviceTemplateResource) Update(ctx context.Context, req re
 	if resp.Diagnostics.HasError() {
 		return
 	}
+
+	deviceIdsMap := make(map[string]bool)
+	for _, device := range plan.Devices {
+		deviceIdsMap[device.Id.ValueString()] = true
+	}
+	for _, device := range state.Devices {
+		deviceIdsMap[device.Id.ValueString()] = true
+	}
+	deviceIds := make([]string, 0, len(deviceIdsMap))
+	for id := range deviceIdsMap {
+		deviceIds = append(deviceIds, id)
+	}
+	tflog.Debug(ctx, fmt.Sprintf("Acquiring locks for devices Update: %v", deviceIds))
+	r.lockDevices(deviceIds)
+	defer r.unlockDevices(deviceIds)
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Id.ValueString()))
 
@@ -265,9 +314,18 @@ func (r *AttachFeatureDeviceTemplateResource) Delete(ctx context.Context, req re
 		return
 	}
 
+	deviceIds := make([]string, len(state.Devices))
+	for i, device := range state.Devices {
+		deviceIds[i] = device.Id.ValueString()
+	}
+	tflog.Debug(ctx, fmt.Sprintf("Acquiring locks for devices Delete: %v", deviceIds))
+	r.lockDevices(deviceIds)
+	defer r.unlockDevices(deviceIds)
+
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Id.ValueString()))
 
 	res, err := state.detachDevices(ctx, r.client, &plan, []string{})
+	tflog.Debug(ctx, fmt.Sprintf("Delete detachDevices Response: %s", res.String()))
 	if err != nil {
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve currently attached devices, got error: %s", err))
 		return
