@@ -131,20 +131,14 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to configure object (POST), got error: %s, %s", err, res.String()))
 		return
 	}
-	res, err = r.client.Get(plan.getPath())
+	existingTags, err := r.client.Get(plan.getPath())
 	if err != nil {
-		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, res.String()))
+		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve object (GET), got error: %s, %s", err, existingTags.String()))
 		return
 	}
-	plan.Id = types.StringValue(res.Get("#(name==\"" + plan.Name.ValueString() + "\").id").String())
+	plan.Id = types.StringValue(existingTags.Get("#(name==\"" + plan.Name.ValueString() + "\").id").String())
 
 	if len(plan.Devices.Elements()) > 0 {
-		existingTags, err := r.client.Get(plan.getPath())
-		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tags (GET), got error: %s, %s", err, existingTags.String()))
-			return
-		}
-
 		body = plan.toBodyDeviceAssociationWithExistingTags(ctx, existingTags)
 		res, err = r.client.Post("/v1/tags/associate", body)
 		if err != nil {
@@ -158,7 +152,7 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 		}
 		// Wait for API eventual consistency before releasing mutex
 		// This ensures the next tag operation sees the updated associations
-		time.Sleep(2 * time.Second)
+		time.Sleep(time.Second)
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Name.ValueString()))
@@ -226,7 +220,7 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 		}
 		// Wait for API eventual consistency before releasing mutex
 		// This ensures the next tag operation sees the updated associations
-		time.Sleep(2 * time.Second)
+		time.Sleep(time.Second)
 	}
 
 	// Get all associate devices
@@ -286,6 +280,9 @@ func (r *TagResource) Delete(ctx context.Context, req resource.DeleteRequest, re
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Delete", state.Name.ValueString()))
+
+	r.updateMutex.Lock()
+	defer r.updateMutex.Unlock()
 
 	if len(state.Devices.Elements()) > 0 {
 		body := state.toBodyDeviceAssociation(ctx)
