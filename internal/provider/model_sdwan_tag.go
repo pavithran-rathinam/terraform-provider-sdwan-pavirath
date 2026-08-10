@@ -91,6 +91,93 @@ func (data Tag) toBodyDeviceAssociation(ctx context.Context) string {
 	return body
 }
 
+func (data Tag) toBodyDeviceAssociationWithExistingTags(ctx context.Context, existingTags gjson.Result) string {
+	body := ""
+	body, _ = sjson.Set(body, "data", []interface{}{})
+
+	planDevices := make(map[string]bool)
+	for _, item := range data.Devices.Elements() {
+		if !item.IsNull() {
+			planDevices[strings.Trim(item.String(), "\"")] = true
+		}
+	}
+
+	tagDeviceMap := make(map[string]map[string]bool)
+	tagDeviceMap[data.Id.ValueString()] = make(map[string]bool)
+	for d := range planDevices {
+		tagDeviceMap[data.Id.ValueString()][d] = true
+	}
+
+	touchedDevices := make(map[string]bool)
+	for d := range planDevices {
+		touchedDevices[d] = true
+	}
+
+	tagAssociations := make(map[string]map[string]bool)
+	for _, tag := range existingTags.Array() {
+		tagId := tag.Get("id").String()
+		if tagId == data.Id.ValueString() {
+			continue
+		}
+		tagAssociations[tagId] = make(map[string]bool)
+		if tagAssoc := tag.Get("tagAssociation"); tagAssoc.Exists() {
+			for _, assoc := range tagAssoc.Array() {
+				deviceId := assoc.Get("id").String()
+				tagAssociations[tagId][deviceId] = true
+			}
+		}
+	}
+
+	changed := true
+	for changed {
+		changed = false
+		for tagId, devices := range tagAssociations {
+			if _, alreadyIncluded := tagDeviceMap[tagId]; alreadyIncluded {
+				continue
+			}
+
+			// Check if this tag has any devices we're touching
+			hasOverlap := false
+			for deviceId := range devices {
+				if touchedDevices[deviceId] {
+					hasOverlap = true
+					break
+				}
+			}
+
+			if hasOverlap {
+				// Include all of this tag's device associations
+				tagDeviceMap[tagId] = make(map[string]bool)
+				for deviceId := range devices {
+					tagDeviceMap[tagId][deviceId] = true
+					if !touchedDevices[deviceId] {
+						touchedDevices[deviceId] = true
+						changed = true
+					}
+				}
+			}
+		}
+	}
+
+	// Build the request body with all tags and their devices
+	for tagId, devices := range tagDeviceMap {
+		itemBody := ""
+		itemBody, _ = sjson.Set(itemBody, "tagId", tagId)
+		itemBody, _ = sjson.Set(itemBody, "objects", []interface{}{})
+
+		for deviceId := range devices {
+			itemChildBody := ""
+			itemChildBody, _ = sjson.Set(itemChildBody, "id", deviceId)
+			itemChildBody, _ = sjson.Set(itemChildBody, "objectType", "DEVICE")
+			itemBody, _ = sjson.SetRaw(itemBody, "objects.-1", itemChildBody)
+		}
+
+		body, _ = sjson.SetRaw(body, "data.-1", itemBody)
+	}
+
+	return body
+}
+
 func (data *Tag) fromBody(ctx context.Context, res gjson.Result) {
 	if value := res.Get("name"); value.Exists() {
 		data.Name = types.StringValue(value.String())

@@ -120,6 +120,9 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Create", plan.Name.ValueString()))
 
+	r.updateMutex.Lock()
+	defer r.updateMutex.Unlock()
+
 	// Create object
 	body := plan.toBody(ctx)
 
@@ -136,7 +139,13 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 	plan.Id = types.StringValue(res.Get("#(name==\"" + plan.Name.ValueString() + "\").id").String())
 
 	if len(plan.Devices.Elements()) > 0 {
-		body = plan.toBodyDeviceAssociation(ctx)
+		existingTags, err := r.client.Get(plan.getPath())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tags (GET), got error: %s, %s", err, existingTags.String()))
+			return
+		}
+
+		body = plan.toBodyDeviceAssociationWithExistingTags(ctx, existingTags)
 		res, err = r.client.Post("/v1/tags/associate", body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to associate devices to tag (POST), got error: %s, %s", err, res.String()))
@@ -147,6 +156,9 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 			}
 			return
 		}
+		// Wait for API eventual consistency before releasing mutex
+		// This ensures the next tag operation sees the updated associations
+		time.Sleep(2 * time.Second)
 	}
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Create finished successfully", plan.Name.ValueString()))
@@ -196,14 +208,25 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 
 	tflog.Debug(ctx, fmt.Sprintf("%s: Beginning Update", plan.Name.ValueString()))
 
-	// Add all devices in state
+	r.updateMutex.Lock()
+	defer r.updateMutex.Unlock()
+
 	if len(plan.Devices.Elements()) > 0 {
-		body := plan.toBodyDeviceAssociation(ctx)
+		existingTags, err := r.client.Get(plan.getPath())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tags (GET), got error: %s, %s", err, existingTags.String()))
+			return
+		}
+
+		body := plan.toBodyDeviceAssociationWithExistingTags(ctx, existingTags)
 		res, err := r.client.Post("/v1/tags/associate", body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to associate devices to tag (POST), got error: %s, %s", err, res.String()))
 			return
 		}
+		// Wait for API eventual consistency before releasing mutex
+		// This ensures the next tag operation sees the updated associations
+		time.Sleep(2 * time.Second)
 	}
 
 	// Get all associate devices

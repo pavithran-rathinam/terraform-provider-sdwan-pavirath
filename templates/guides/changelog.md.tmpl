@@ -7,6 +7,9 @@ description: |-
 
 # Changelog
 
+## 0.11.5 (unreleased)
+- Fix `sdwan_tag` resource create replaces all existing device tag associations instead of adding membership
+
 ## 0.11.4
 
 - Add `sdwan_other_trustsec_feature` resource and data source (SD-WAN Manager 20.18+)
