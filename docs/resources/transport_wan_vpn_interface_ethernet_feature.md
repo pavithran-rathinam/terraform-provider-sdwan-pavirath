@@ -209,7 +209,7 @@ resource "sdwan_transport_wan_vpn_interface_ethernet_feature" "example" {
   - Choices: `full`, `half`, `auto`
 - `duplex_variable` (String) Variable name, Attribute conditional on `port_channel_interface` not equal to `true`
 - `enable_dhcpv6` (Boolean) Enable DHCPv6, Attribute conditional on `ipv6_address_type` equal to `dynamic` or `ipv6_address_type_variable` being set
-- `enable_enforced_propogation` (Boolean) Enable/Disable SGT Enforcement on an interface, Attribute conditional on `port_channel_member_interface` not equal to `true` and SD-WAN Manager version `20.18.1` or higher
+- `enable_enforced_propagation` (Boolean) Enable/Disable SGT Enforcement on an interface, Attribute conditional on `port_channel_member_interface` not equal to `true` and SD-WAN Manager version `20.18.1` or higher
 - `enable_ha_interlink_interface` (Boolean) HA Interlink interface on/off, Attribute conditional on `port_channel_member_interface` not equal to `true`
   - Default value: `false`
 - `enable_sgt_propagation` (Boolean) Indicates that the interface is trustworthy for CTS, Attribute conditional on `port_channel_member_interface` not equal to `true` and SD-WAN Manager version `20.18.1` or higher
@@ -404,7 +404,7 @@ resource "sdwan_transport_wan_vpn_interface_ethernet_feature" "example" {
 - `tloc_extension_variable` (String) Variable name, Attribute conditional on `port_channel_member_interface` not equal to `true`
 - `tracker` (String) Enable tracker for this interface, Attribute conditional on `port_channel_member_interface` not equal to `true`
 - `tracker_variable` (String) Variable name, Attribute conditional on `port_channel_member_interface` not equal to `true`
-- `trusted` (Boolean) Indicates that the interface is trustworthy for CTS., Attribute conditional on `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and `security_group_tag` being set and SD-WAN Manager version `20.18.1` or higher
+- `trusted` (Boolean) Indicates that the interface is trustworthy for CTS., Attribute conditional on (`security_group_tag` being set and `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and SD-WAN Manager version `20.18.1` or higher) or (`security_group_tag_variable` being set and `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and SD-WAN Manager version `20.18.1` or higher)
   - Default value: `true`
 - `tunnel_bandwidth_percent` (Number) Tunnels Bandwidth Percent, Attribute conditional on `tunnel_interface` equal to `true` and `tunnel_qos_mode` equal to `hub`
   - Range: `1`-`100`

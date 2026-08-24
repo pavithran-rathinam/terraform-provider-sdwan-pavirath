@@ -1219,7 +1219,7 @@ func (d *TransportWANVPNInterfaceEthernetProfileParcelDataSource) Schema(ctx con
 				MarkdownDescription: "Indicates that the interface is trustworthy for CTS.",
 				Computed:            true,
 			},
-			"enable_enforced_propogation": schema.BoolAttribute{
+			"enable_enforced_propagation": schema.BoolAttribute{
 				MarkdownDescription: "Enable/Disable SGT Enforcement on an interface",
 				Computed:            true,
 			},

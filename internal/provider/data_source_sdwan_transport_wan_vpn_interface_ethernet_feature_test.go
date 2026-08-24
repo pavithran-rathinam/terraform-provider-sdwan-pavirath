@@ -128,6 +128,15 @@ func TestAccDataSourceSdwanTransportWANVPNInterfaceEthernetProfileParcel(t *test
 	checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "arps.0.ip_address", "1.2.3.4"))
 	checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "arps.0.mac_address", "00-B0-D0-63-C2-26"))
 	if os.Getenv("SDWAN_2018") != "" {
+		checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "enable_sgt_propagation", "true"))
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "propagate", "true"))
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "enable_enforced_propagation", "true"))
+	}
+	if os.Getenv("SDWAN_2018") != "" {
 		checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "enforced_security_group_tag", "200"))
 	}
 	checks = append(checks, resource.TestCheckResourceAttr("data.sdwan_transport_wan_vpn_interface_ethernet_feature.test", "icmp_redirect_disable", "true"))
@@ -424,6 +433,15 @@ func testAccDataSourceSdwanTransportWANVPNInterfaceEthernetProfileParcelConfig()
 	config += `	  mac_address = "00-B0-D0-63-C2-26"` + "\n"
 	config += `	}]` + "\n"
 	if os.Getenv("SDWAN_2018") != "" {
+		config += `	enable_sgt_propagation = true` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	propagate = true` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	enable_enforced_propagation = true` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
 		config += `	enforced_security_group_tag = 200` + "\n"
 	}
 	config += `	icmp_redirect_disable = true` + "\n"
@@ -577,6 +595,15 @@ func testAccDataSourceSdwanTransportWANVPNInterfaceEthernetProfileParcelByNameCo
 	config += `	  ip_address = "1.2.3.4"` + "\n"
 	config += `	  mac_address = "00-B0-D0-63-C2-26"` + "\n"
 	config += `	}]` + "\n"
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	enable_sgt_propagation = true` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	propagate = true` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	enable_enforced_propagation = true` + "\n"
+	}
 	if os.Getenv("SDWAN_2018") != "" {
 		config += `	enforced_security_group_tag = 200` + "\n"
 	}

@@ -245,7 +245,7 @@ type TransportWANVPNInterfaceEthernet struct {
 	SecurityGroupTag                                   types.Int64                                                     `tfsdk:"security_group_tag"`
 	SecurityGroupTagVariable                           types.String                                                    `tfsdk:"security_group_tag_variable"`
 	Trusted                                            types.Bool                                                      `tfsdk:"trusted"`
-	EnableEnforcedPropogation                          types.Bool                                                      `tfsdk:"enable_enforced_propogation"`
+	EnableEnforcedPropagation                          types.Bool                                                      `tfsdk:"enable_enforced_propagation"`
 	EnforcedSecurityGroupTag                           types.Int64                                                     `tfsdk:"enforced_security_group_tag"`
 	EnforcedSecurityGroupTagVariable                   types.String                                                    `tfsdk:"enforced_security_group_tag_variable"`
 	IcmpRedirectDisable                                types.Bool                                                      `tfsdk:"icmp_redirect_disable"`
@@ -2617,17 +2617,17 @@ func (data TransportWANVPNInterfaceEthernet) toBody(ctx context.Context, ver *ve
 		}
 	}
 	if data.Trusted.IsNull() {
-		if true && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && !(data.SecurityGroupTag.IsNull()) && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && ((!(data.SecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.SecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
 			body, _ = sjson.Set(body, path+"trustsec.trusted.optionType", "default")
 			body, _ = sjson.Set(body, path+"trustsec.trusted.value", true)
 		}
 	} else {
-		if true && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && !(data.SecurityGroupTag.IsNull()) && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && ((!(data.SecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.SecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.EnableSgtPropagation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
 			body, _ = sjson.Set(body, path+"trustsec.trusted.optionType", "global")
 			body, _ = sjson.Set(body, path+"trustsec.trusted.value", data.Trusted.ValueBool())
 		}
 	}
-	if data.EnableEnforcedPropogation.IsNull() {
+	if data.EnableEnforcedPropagation.IsNull() {
 		if true && !(data.PortChannelMemberInterface.ValueBool() == true) && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
 			body, _ = sjson.Set(body, path+"trustsec.enableEnforcedPropogation.optionType", "default")
 
@@ -2635,7 +2635,7 @@ func (data TransportWANVPNInterfaceEthernet) toBody(ctx context.Context, ver *ve
 	} else {
 		if true && !(data.PortChannelMemberInterface.ValueBool() == true) && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
 			body, _ = sjson.Set(body, path+"trustsec.enableEnforcedPropogation.optionType", "global")
-			body, _ = sjson.Set(body, path+"trustsec.enableEnforcedPropogation.value", data.EnableEnforcedPropogation.ValueBool())
+			body, _ = sjson.Set(body, path+"trustsec.enableEnforcedPropogation.value", data.EnableEnforcedPropagation.ValueBool())
 		}
 	}
 
@@ -4996,12 +4996,12 @@ func (data *TransportWANVPNInterfaceEthernet) fromBody(ctx context.Context, res 
 			data.Trusted = types.BoolValue(va.Bool())
 		}
 	}
-	data.EnableEnforcedPropogation = types.BoolNull()
+	data.EnableEnforcedPropagation = types.BoolNull()
 
 	if t := res.Get(path + "trustsec.enableEnforcedPropogation.optionType"); t.Exists() {
 		va := res.Get(path + "trustsec.enableEnforcedPropogation.value")
 		if t.String() == "global" {
-			data.EnableEnforcedPropogation = types.BoolValue(va.Bool())
+			data.EnableEnforcedPropagation = types.BoolValue(va.Bool())
 		}
 	}
 	data.EnforcedSecurityGroupTag = types.Int64Null()

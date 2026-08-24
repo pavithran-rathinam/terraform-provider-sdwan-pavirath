@@ -102,7 +102,7 @@ attributes:
           value: ''
           negate: true
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
 
 test_prerequisites: |
   resource "sdwan_transport_feature_profile" "test" {

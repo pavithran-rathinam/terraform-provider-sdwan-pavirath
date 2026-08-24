@@ -1441,10 +1441,10 @@ func (r *TransportWANVPNInterfaceEthernetProfileParcelResource) Schema(ctx conte
 				Optional:            true,
 			},
 			"trusted": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates that the interface is trustworthy for CTS., Attribute conditional on `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and `security_group_tag` being set and SD-WAN Manager version `20.18.1` or higher").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates that the interface is trustworthy for CTS., Attribute conditional on (`security_group_tag` being set and `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and SD-WAN Manager version `20.18.1` or higher) or (`security_group_tag_variable` being set and `port_channel_member_interface` not equal to `true` and `enable_sgt_propagation` equal to `true` and SD-WAN Manager version `20.18.1` or higher)").AddDefaultValueDescription("true").String,
 				Optional:            true,
 			},
-			"enable_enforced_propogation": schema.BoolAttribute{
+			"enable_enforced_propagation": schema.BoolAttribute{
 				MarkdownDescription: helpers.NewAttributeDescription("Enable/Disable SGT Enforcement on an interface, Attribute conditional on `port_channel_member_interface` not equal to `true` and SD-WAN Manager version `20.18.1` or higher").String,
 				Optional:            true,
 			},

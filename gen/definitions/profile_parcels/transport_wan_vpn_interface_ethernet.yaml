@@ -1212,7 +1212,8 @@ attributes:
     tf_name: enable_sgt_propagation
     data_path: [trustsec]
     example: true
-    exclude_test: true
+    exclude_example: true
+    test_tags: [SDWAN_2018]
     conditional_attribute:
       conditions:
         - name: port_channel_member_interface
@@ -1220,11 +1221,12 @@ attributes:
           type: Bool
           negate: true
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
   - model_name: propagate
     data_path: [trustsec]
     example: true
-    exclude_test: true
+    exclude_example: true
+    test_tags: [SDWAN_2018]
     conditional_attribute:
       conditions:
         - name: port_channel_member_interface
@@ -1235,7 +1237,7 @@ attributes:
           value: true
           type: Bool
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
   - model_name: securityGroupTag
     tf_name: security_group_tag
     data_path: [trustsec]
@@ -1251,29 +1253,46 @@ attributes:
           value: true
           type: Bool
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
   - model_name: trusted
     data_path: [trustsec]
     example: true
     exclude_test: true
     conditional_attribute:
+      operator: or
       conditions:
-        - name: port_channel_member_interface
-          value: true
-          type: Bool
-          negate: true
-        - name: enable_sgt_propagation
-          value: true
-          type: Bool
         - name: security_group_tag
           value: ''
           negate: true
-        - type: MinVersion
-          value: 20.18.1  
+          and: 
+            - name: port_channel_member_interface
+              value: true
+              type: Bool
+              negate: true
+            - name: enable_sgt_propagation
+              value: true
+              type: Bool
+            - type: MinVersion
+              value: 20.18.1
+        - name: security_group_tag_variable
+          value: ''
+          negate: true
+          and: 
+            - name: port_channel_member_interface
+              value: true
+              type: Bool
+              negate: true
+            - name: enable_sgt_propagation
+              value: true
+              type: Bool
+            - type: MinVersion
+              value: 20.18.1
   - model_name: enableEnforcedPropogation
+    tf_name: enable_enforced_propagation
     data_path: [trustsec]
     example: true
-    exclude_test: true
+    test_tags: [SDWAN_2018]
+    exclude_example: true
     conditional_attribute:
       conditions:
         - name: port_channel_member_interface
@@ -1281,7 +1300,7 @@ attributes:
           type: Bool
           negate: true
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
   - model_name: enforcedSecurityGroupTag
     data_path: [trustsec]
     example: 200
@@ -1293,7 +1312,7 @@ attributes:
           type: Bool
           negate: true
         - type: MinVersion
-          value: 20.18.1  
+          value: 20.18.1
   - model_name: icmpRedirectDisable
     data_path: [advanced]
     example: true
