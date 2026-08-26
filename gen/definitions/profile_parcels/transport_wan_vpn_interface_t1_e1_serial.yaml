@@ -116,7 +116,7 @@ attributes:
     tf_name: tunnel_interface_full_port_hop
     data_path: [tunnel]
     exclude_example: true
-    test_value: false
+    test_value: "false"
     test_tags: [SDWAN_2018]
     conditional_attribute:
       conditions:
