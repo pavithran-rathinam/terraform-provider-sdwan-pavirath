@@ -29,8 +29,8 @@ import (
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAcc
 func TestAccSdwanTopologyHubSpokeProfileParcel(t *testing.T) {
-	if os.Getenv("SDWAN_2015") == "" {
-		t.Skip("skipping test, set environment variable SDWAN_2015")
+	if os.Getenv("SDWAN_2015") == "" && os.Getenv("SDWAN_2018") == "" {
+		t.Skip("skipping test, set environment variable SDWAN_2015 or SDWAN_2018")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("sdwan_topology_hub_spoke_feature.test", "spokes.0.name", "spoke1"))
@@ -56,6 +56,13 @@ resource "sdwan_topology_feature_profile" "test" {
   name        = "TF_TEST"
   description = "Terraform test"
 }
+resource "sdwan_network_hierarchy_node" "network_hierarchy_node_site_test" {
+  parent_group    = "Global"
+  name         = "TF_TEST_SITE"
+  description  = "EMEA Region EMEA site update new"
+  type         = "site"
+  site_id      = 555
+}
 
 `
 
@@ -72,12 +79,27 @@ func testAccSdwanTopologyHubSpokeProfileParcelConfig_all() string {
 	config += ` description = "Terraform integration test"` + "\n"
 	config += `	feature_profile_id = sdwan_topology_feature_profile.test.id` + "\n"
 	config += `	target_vpns = ["service_lan_vpn1"]` + "\n"
-	config += `	selected_hubs = ["SITE_100"]` + "\n"
+	if os.Getenv("SDWAN_2015") != "" {
+		config += `	selected_hubs = ["SITE_100"]` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	selected_hierarchy_hubs = [sdwan_network_hierarchy_node.network_hierarchy_node_site_test.id]` + "\n"
+	}
 	config += `	spokes = [{` + "\n"
 	config += `	  name = "spoke1"` + "\n"
-	config += `	  spoke_sites = ["SITE_200"]` + "\n"
+	if os.Getenv("SDWAN_2015") != "" {
+		config += `	  spoke_sites = ["SITE_200"]` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	  spoke_hierarchy_uuids = [sdwan_network_hierarchy_node.network_hierarchy_node_site_test.id]` + "\n"
+	}
 	config += `	  hub_sites = [{` + "\n"
-	config += `		sites = ["SITE_100"]` + "\n"
+	if os.Getenv("SDWAN_2015") != "" {
+		config += `		sites = ["SITE_100"]` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `		hub_hierarchy_uuids = [sdwan_network_hierarchy_node.network_hierarchy_node_site_test.id]` + "\n"
+	}
 	config += `		preference = 1` + "\n"
 	config += `	}]` + "\n"
 	config += `	}]` + "\n"

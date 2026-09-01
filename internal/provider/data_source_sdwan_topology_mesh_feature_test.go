@@ -29,8 +29,8 @@ import (
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAccDataSource
 func TestAccDataSourceSdwanTopologyMeshProfileParcel(t *testing.T) {
-	if os.Getenv("SDWAN_2015") == "" {
-		t.Skip("skipping test, set environment variable SDWAN_2015")
+	if os.Getenv("SDWAN_2015") == "" && os.Getenv("SDWAN_2018") == "" {
+		t.Skip("skipping test, set environment variable SDWAN_2015 or SDWAN_2018")
 	}
 	var checks []resource.TestCheckFunc
 	resource.Test(t, resource.TestCase{
@@ -53,6 +53,13 @@ resource "sdwan_topology_feature_profile" "test" {
   name        = "TF_TEST"
   description = "Terraform test"
 }
+resource "sdwan_network_hierarchy_node" "network_hierarchy_node_site_test" {
+  parent_group    = "Global"
+  name         = "TF_TEST_SITE"
+  description  = "EMEA Region EMEA site update new"
+  type         = "site"
+  site_id      = 555
+}
 
 `
 
@@ -65,7 +72,12 @@ func testAccDataSourceSdwanTopologyMeshProfileParcelConfig() string {
 	config += ` description = "Terraform integration test"` + "\n"
 	config += `	feature_profile_id = sdwan_topology_feature_profile.test.id` + "\n"
 	config += `	target_vpns = ["service_lan_vpn1"]` + "\n"
-	config += `	sites = ["SITE_100"]` + "\n"
+	if os.Getenv("SDWAN_2015") != "" {
+		config += `	sites = ["SITE_100"]` + "\n"
+	}
+	if os.Getenv("SDWAN_2018") != "" {
+		config += `	hierarchy_uuids = [sdwan_network_hierarchy_node.network_hierarchy_node_site_test.id]` + "\n"
+	}
 	config += `}` + "\n"
 
 	config += `
