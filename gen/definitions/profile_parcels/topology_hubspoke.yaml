@@ -5,7 +5,7 @@ rest_endpoint: /v1/feature-profile/sdwan/topology/%v/hubspoke
 minimum_version: 20.15.0
 has_version: true
 id_attribute: id
-test_tags: [SDWAN_2015, SDWAN_2018]
+test_tags: [SDWAN_2015]
 skip_minimum_test: true
 no_data_source_name_query: true
 parcel_type: feature
@@ -37,11 +37,6 @@ attributes:
     ignore_mandatory: true
     exclude_example: true
     test_tags: [SDWAN_2015]
-    conditional_attribute:
-      conditions:
-        - type: MinVersion
-          value: 20.18.1
-          negate: true
   - model_name: selectedHierarchyHubs
     tf_name: selected_hierarchy_hubs
     no_augment_config: true
@@ -78,11 +73,6 @@ attributes:
         ignore_mandatory: true
         exclude_example: true
         test_tags: [SDWAN_2015]
-        conditional_attribute:
-          conditions:
-            - type: MinVersion
-              value: 20.18.1
-              negate: true
       - model_name: spokeHierarchyUuid
         tf_name: spoke_hierarchy_uuids
         no_augment_config: true
@@ -111,11 +101,6 @@ attributes:
             ignore_mandatory: true
             exclude_example: true
             test_tags: [SDWAN_2015]
-            conditional_attribute:
-              conditions:
-                - type: MinVersion
-                  value: 20.18.1
-                  negate: true
           - model_name: hierarchyUuid
             tf_name: hub_hierarchy_uuids
             no_augment_config: true

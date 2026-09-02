@@ -95,7 +95,7 @@ func (r *TopologyHubSpokeProfileParcelResource) Schema(ctx context.Context, req 
 				Required:            true,
 			},
 			"selected_hubs": schema.SetAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Selected hub sites, Attribute conditional on SD-WAN Manager version lower than `20.18.1`").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Selected hub sites").String,
 				ElementType:         types.StringType,
 				Optional:            true,
 			},
@@ -114,7 +114,7 @@ func (r *TopologyHubSpokeProfileParcelResource) Schema(ctx context.Context, req 
 							Optional:            true,
 						},
 						"spoke_sites": schema.SetAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Spoke site list, Attribute conditional on SD-WAN Manager version lower than `20.18.1`").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Spoke site list").String,
 							ElementType:         types.StringType,
 							Optional:            true,
 						},
@@ -129,7 +129,7 @@ func (r *TopologyHubSpokeProfileParcelResource) Schema(ctx context.Context, req 
 							NestedObject: schema.NestedAttributeObject{
 								Attributes: map[string]schema.Attribute{
 									"sites": schema.SetAttribute{
-										MarkdownDescription: helpers.NewAttributeDescription("Hub sites, Attribute conditional on SD-WAN Manager version lower than `20.18.1`").String,
+										MarkdownDescription: helpers.NewAttributeDescription("Hub sites").String,
 										ElementType:         types.StringType,
 										Optional:            true,
 									},

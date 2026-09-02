@@ -93,7 +93,7 @@ func (r *TopologyMeshProfileParcelResource) Schema(ctx context.Context, req reso
 				Required:            true,
 			},
 			"sites": schema.SetAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Site list, Attribute conditional on SD-WAN Manager version lower than `20.18.1`").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Site list").String,
 				ElementType:         types.StringType,
 				Optional:            true,
 			},

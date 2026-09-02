@@ -180,12 +180,12 @@ func (data TopologyCustomControl) toBody(ctx context.Context, ver *version.Versi
 		}
 	}
 	if data.TargetInboundSites.IsNull() {
-		if true && data.TargetLevel.ValueString() == "SITE" && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && data.TargetInboundHierarchyUuids.IsNull() && data.TargetOutboundHierarchyUuids.IsNull() {
 			body, _ = sjson.Set(body, path+"target.inboundSites.optionType", "global")
 			body, _ = sjson.Set(body, path+"target.inboundSites.value", []interface{}{})
 		}
 	} else {
-		if true && data.TargetLevel.ValueString() == "SITE" && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && data.TargetInboundHierarchyUuids.IsNull() && data.TargetOutboundHierarchyUuids.IsNull() {
 			body, _ = sjson.Set(body, path+"target.inboundSites.optionType", "global")
 			var values []string
 			data.TargetInboundSites.ElementsAs(ctx, &values, false)
@@ -193,12 +193,12 @@ func (data TopologyCustomControl) toBody(ctx context.Context, ver *version.Versi
 		}
 	}
 	if data.TargetInboundHierarchyUuids.IsNull() {
-		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) && data.TargetInboundSites.IsNull() && data.TargetOutboundSites.IsNull() {
 			body, _ = sjson.Set(body, path+"target.inboundHierarchyUuid.optionType", "global")
 			body, _ = sjson.Set(body, path+"target.inboundHierarchyUuid.value", []interface{}{})
 		}
 	} else {
-		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) && data.TargetInboundSites.IsNull() && data.TargetOutboundSites.IsNull() {
 			body, _ = sjson.Set(body, path+"target.inboundHierarchyUuid.optionType", "global")
 			var values []string
 			data.TargetInboundHierarchyUuids.ElementsAs(ctx, &values, false)
@@ -206,12 +206,12 @@ func (data TopologyCustomControl) toBody(ctx context.Context, ver *version.Versi
 		}
 	}
 	if data.TargetOutboundSites.IsNull() {
-		if true && data.TargetLevel.ValueString() == "SITE" && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && data.TargetOutboundHierarchyUuids.IsNull() && data.TargetInboundHierarchyUuids.IsNull() {
 			body, _ = sjson.Set(body, path+"target.outboundSites.optionType", "global")
 			body, _ = sjson.Set(body, path+"target.outboundSites.value", []interface{}{})
 		}
 	} else {
-		if true && data.TargetLevel.ValueString() == "SITE" && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && data.TargetOutboundHierarchyUuids.IsNull() && data.TargetInboundHierarchyUuids.IsNull() {
 			body, _ = sjson.Set(body, path+"target.outboundSites.optionType", "global")
 			var values []string
 			data.TargetOutboundSites.ElementsAs(ctx, &values, false)
@@ -219,12 +219,12 @@ func (data TopologyCustomControl) toBody(ctx context.Context, ver *version.Versi
 		}
 	}
 	if data.TargetOutboundHierarchyUuids.IsNull() {
-		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) && data.TargetOutboundSites.IsNull() && data.TargetInboundSites.IsNull() {
 			body, _ = sjson.Set(body, path+"target.outboundHierarchyUuid.optionType", "global")
 			body, _ = sjson.Set(body, path+"target.outboundHierarchyUuid.value", []interface{}{})
 		}
 	} else {
-		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) {
+		if true && data.TargetLevel.ValueString() == "SITE" && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))) && data.TargetOutboundSites.IsNull() && data.TargetInboundSites.IsNull() {
 			body, _ = sjson.Set(body, path+"target.outboundHierarchyUuid.optionType", "global")
 			var values []string
 			data.TargetOutboundHierarchyUuids.ElementsAs(ctx, &values, false)
@@ -354,7 +354,7 @@ func (data TopologyCustomControl) toBody(ctx context.Context, ver *version.Versi
 						}
 					}
 					if !childItem.Site.IsNull() {
-						if true && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+						if true {
 							itemChildBody, _ = sjson.Set(itemChildBody, "site.optionType", "global")
 							var values []string
 							childItem.Site.ElementsAs(ctx, &values, false)

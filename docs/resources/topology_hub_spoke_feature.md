@@ -50,7 +50,7 @@ resource "sdwan_topology_hub_spoke_feature" "example" {
 
 - `description` (String) The description of the Feature
 - `selected_hierarchy_hubs` (Set of String) Selected hub network hierarchy UUIDs, Attribute conditional on SD-WAN Manager version `20.18.1` or higher
-- `selected_hubs` (Set of String) Selected hub sites, Attribute conditional on SD-WAN Manager version lower than `20.18.1`
+- `selected_hubs` (Set of String) Selected hub sites
 
 ### Read-Only
 
@@ -65,7 +65,7 @@ Optional:
 - `hub_sites` (Attributes List) Hub site preferences (see [below for nested schema](#nestedatt--spokes--hub_sites))
 - `name` (String) Spoke name
 - `spoke_hierarchy_uuids` (Set of String) Spoke network hierarchy UUIDs, Attribute conditional on SD-WAN Manager version `20.18.1` or higher
-- `spoke_sites` (Set of String) Spoke site list, Attribute conditional on SD-WAN Manager version lower than `20.18.1`
+- `spoke_sites` (Set of String) Spoke site list
 
 <a id="nestedatt--spokes--hub_sites"></a>
 ### Nested Schema for `spokes.hub_sites`
@@ -75,7 +75,7 @@ Optional:
 - `hub_hierarchy_uuids` (Set of String) Hub network hierarchy UUIDs, Attribute conditional on SD-WAN Manager version `20.18.1` or higher
 - `preference` (Number) Hub preference value
   - Range: `1`-`255`
-- `sites` (Set of String) Hub sites, Attribute conditional on SD-WAN Manager version lower than `20.18.1`
+- `sites` (Set of String) Hub sites
 
 ## Import
 

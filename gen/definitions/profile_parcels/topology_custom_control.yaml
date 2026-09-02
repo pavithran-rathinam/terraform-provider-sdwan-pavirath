@@ -4,7 +4,7 @@ rest_endpoint: /v1/feature-profile/sdwan/topology/%v/custom-control
 minimum_version: 20.15.0
 has_version: true
 id_attribute: id
-test_tags: [SDWAN_2015, SDWAN_2018]
+test_tags: [SDWAN_2015]
 skip_minimum_test: true
 no_data_source_name_query: true
 parcel_type: feature
@@ -59,9 +59,10 @@ attributes:
       conditions:
         - name: target_level
           value: SITE
-        - type: MinVersion
-          value: 20.18.1
-          negate: true
+        - name: target_inbound_hierarchy_uuids
+          value: ''
+        - name: target_outbound_hierarchy_uuids
+          value: ''
   - model_name: inboundHierarchyUuid
     data_path: [target]
     tf_name: target_inbound_hierarchy_uuids
@@ -81,6 +82,10 @@ attributes:
           value: SITE
         - type: MinVersion
           value: 20.18.1
+        - name: target_inbound_sites
+          value: ''
+        - name: target_outbound_sites
+          value: ''
   - model_name: outboundSites
     data_path: [target]
     tf_name: target_outbound_sites
@@ -97,9 +102,10 @@ attributes:
       conditions:
         - name: target_level
           value: SITE
-        - type: MinVersion
-          value: 20.18.1
-          negate: true
+        - name: target_outbound_hierarchy_uuids
+          value: ''
+        - name: target_inbound_hierarchy_uuids
+          value: ''
   - model_name: outboundHierarchyUuid
     data_path: [target]
     tf_name: target_outbound_hierarchy_uuids
@@ -119,6 +125,10 @@ attributes:
           value: SITE
         - type: MinVersion
           value: 20.18.1
+        - name: target_outbound_sites
+          value: ''
+        - name: target_inbound_sites
+          value: ''
   - model_name: inboundRegions
     data_path: [target]
     tf_name: target_inbound_regions
@@ -262,11 +272,6 @@ attributes:
             example: site_100
             exclude_example: true
             test_tags: [SDWAN_2015]
-            conditional_attribute:
-              conditions:
-                - type: MinVersion
-                  value: 20.18.1
-                  negate: true
           - model_name: hierarchyUuid
             tf_name: hierarchy_uuids
             no_augment_config: true

@@ -37,7 +37,7 @@ resource "sdwan_topology_mesh_feature" "example" {
 
 - `description` (String) The description of the Feature
 - `hierarchy_uuids` (Set of String) Network hierarchy UUIDs, Attribute conditional on SD-WAN Manager version `20.18.1` or higher
-- `sites` (Set of String) Site list, Attribute conditional on SD-WAN Manager version lower than `20.18.1`
+- `sites` (Set of String) Site list
 
 ### Read-Only
 

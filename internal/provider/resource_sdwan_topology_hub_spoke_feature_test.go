@@ -29,8 +29,8 @@ import (
 
 // Section below is generated&owned by "gen/generator.go". //template:begin testAcc
 func TestAccSdwanTopologyHubSpokeProfileParcel(t *testing.T) {
-	if os.Getenv("SDWAN_2015") == "" && os.Getenv("SDWAN_2018") == "" {
-		t.Skip("skipping test, set environment variable SDWAN_2015 or SDWAN_2018")
+	if os.Getenv("SDWAN_2015") == "" {
+		t.Skip("skipping test, set environment variable SDWAN_2015")
 	}
 	var checks []resource.TestCheckFunc
 	checks = append(checks, resource.TestCheckResourceAttr("sdwan_topology_hub_spoke_feature.test", "spokes.0.name", "spoke1"))

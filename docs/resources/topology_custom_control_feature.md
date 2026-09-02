@@ -71,12 +71,12 @@ resource "sdwan_topology_custom_control_feature" "example" {
 
 - `description` (String) The description of the Feature
 - `sequences` (Attributes List) Sequence list (see [below for nested schema](#nestedatt--sequences))
-- `target_inbound_hierarchy_uuids` (Set of String) Inbound network hierarchy UUIDs, Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version `20.18.1` or higher
+- `target_inbound_hierarchy_uuids` (Set of String) Inbound network hierarchy UUIDs, Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version `20.18.1` or higher and `target_inbound_sites` not being set and `target_outbound_sites` not being set
 - `target_inbound_regions` (Attributes List) , Attribute conditional on `target_level` equal to `REGION` or `target_level` equal to `SUB_REGION` (see [below for nested schema](#nestedatt--target_inbound_regions))
-- `target_inbound_sites` (Set of String) , Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version lower than `20.18.1`
-- `target_outbound_hierarchy_uuids` (Set of String) Outbound network hierarchy UUIDs, Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version `20.18.1` or higher
+- `target_inbound_sites` (Set of String) , Attribute conditional on `target_level` equal to `SITE` and `target_inbound_hierarchy_uuids` not being set and `target_outbound_hierarchy_uuids` not being set
+- `target_outbound_hierarchy_uuids` (Set of String) Outbound network hierarchy UUIDs, Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version `20.18.1` or higher and `target_outbound_sites` not being set and `target_inbound_sites` not being set
 - `target_outbound_regions` (Attributes List) , Attribute conditional on `target_level` equal to `REGION` or `target_level` equal to `SUB_REGION` (see [below for nested schema](#nestedatt--target_outbound_regions))
-- `target_outbound_sites` (Set of String) , Attribute conditional on `target_level` equal to `SITE` and SD-WAN Manager version lower than `20.18.1`
+- `target_outbound_sites` (Set of String) , Attribute conditional on `target_level` equal to `SITE` and `target_outbound_hierarchy_uuids` not being set and `target_inbound_hierarchy_uuids` not being set
 - `target_role` (String) - Choices: `edge-router`, `border-router`
 - `target_vpn` (Set of String)
 
@@ -180,7 +180,7 @@ Optional:
 - `prefix_list_id` (String) Prefix list ID
 - `role` (String) Role
   - Choices: `edge-router`, `border-router`
-- `site` (Set of String) Site list, Attribute conditional on SD-WAN Manager version lower than `20.18.1`
+- `site` (Set of String) Site list
 - `tloc_color` (String) TLOC color
 - `tloc_encapsulation` (String) TLOC encapsulation
   - Choices: `ipsec`, `gre`

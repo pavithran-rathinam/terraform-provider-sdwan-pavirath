@@ -75,7 +75,7 @@ func (data TopologyMesh) toBody(ctx context.Context, ver *version.Version) strin
 		}
 	}
 	if !data.Sites.IsNull() {
-		if true && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true {
 			body, _ = sjson.Set(body, path+"sites.optionType", "global")
 			var values []string
 			data.Sites.ElementsAs(ctx, &values, false)

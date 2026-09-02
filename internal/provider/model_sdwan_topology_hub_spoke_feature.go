@@ -89,7 +89,7 @@ func (data TopologyHubSpoke) toBody(ctx context.Context, ver *version.Version) s
 		}
 	}
 	if !data.SelectedHubs.IsNull() {
-		if true && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+		if true {
 			body, _ = sjson.Set(body, path+"selectedHubs.optionType", "global")
 			var values []string
 			data.SelectedHubs.ElementsAs(ctx, &values, false)
@@ -115,7 +115,7 @@ func (data TopologyHubSpoke) toBody(ctx context.Context, ver *version.Version) s
 				}
 			}
 			if !item.SpokeSites.IsNull() {
-				if true && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+				if true {
 					itemBody, _ = sjson.Set(itemBody, "spokeSites.optionType", "global")
 					var values []string
 					item.SpokeSites.ElementsAs(ctx, &values, false)
@@ -135,7 +135,7 @@ func (data TopologyHubSpoke) toBody(ctx context.Context, ver *version.Version) s
 				for _, childItem := range item.HubSites {
 					itemChildBody := ""
 					if !childItem.Sites.IsNull() {
-						if true && !(ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) {
+						if true {
 							itemChildBody, _ = sjson.Set(itemChildBody, "sites.optionType", "global")
 							var values []string
 							childItem.Sites.ElementsAs(ctx, &values, false)
