@@ -47,6 +47,8 @@ description: |-
 - Fix `sdwan_network_hierarchy_node`'s `address` attribute crashing with `Received unknown value, however the target type cannot handle unknown values` when set from a `for_each`-derived expression (e.g. `address = try(each.value.address, null)`). No change to the `address = { street = ..., ... }` syntax.
 - Mark `flow_active_timeout`, `flow_inactive_timeout`, `flow_refresh_time`, `flow_sampling_interval`, and `protocol` as `Required` on `sdwan_network_hierarchy_cflowd` to match SD-WAN Manager's API schema, which rejects a request omitting any of them
 - Fix `sdwan_network_hierarchy_cflowd` crashing with `Received unknown value, however the target type cannot handle unknown values` when `collectors` is set from a `for_each`-derived expression
+- Fix `sdwan_topology_group` and `sdwan_activate_topology_group` producing an unwanted re-activation right after `terraform import`, caused by the internal `feature_versions` bookkeeping attribute
+- Fix `sdwan_activate_topology_group` documentation subcategory: now grouped under "Topology Groups" instead of the generic resources section
 
 ## 0.11.4
 
