@@ -32,7 +32,8 @@
   - `sdwan_topology_custom_control_feature`: Add `target_inbound_hierarchy_uuids`, `target_outbound_hierarchy_uuids`, and `hierarchy_uuids` (in match entries) attributes
   - `sdwan_topology_hub_spoke_feature`: Add `selected_hierarchy_hubs`, `spoke_hierarchy_uuids`, and `hub_hierarchy_uuids` attributes
   - `sdwan_topology_mesh_feature`: Add `hierarchy_uuids` attribute
-  - Note: "By Tag Rules" is not implemented in this release due to technical complexity and will be included in an upcoming release
+  - Site-name-based targeting continues to be supported on Manager 20.18+ alongside the new hierarchy-UUID attributes; site-based match entries have display issue in the GUI.
+  - Note: "By Tag Rules" is not yet implemented and will be included in an upcoming release
 
 ## 0.11.4
 
