@@ -1,5 +1,6 @@
 ## 0.11.5 (unreleased)
 
+- Update provider documentation: refresh tested platform versions to 20.12/20.15/20.18, restructure guides into "Getting Started - Configuration and Policy Groups" (new, recommended) and "Getting Started - Classic Templates"
 - Bump `sdwan_service_lan_vpn_interface_ethernet_feature` schema to `20.18.0`
 - Bump `sdwan_service_routing_bgp_feature` schema to `20.18.0`
 - Bump `sdwan_service_routing_eigrp_feature` schema to `20.18.0`
@@ -55,6 +56,12 @@
   - `sdwan_topology_mesh_feature`: Add `hierarchy_uuids` attribute
   - Site-name-based targeting continues to be supported on Manager 20.18+ alongside the new hierarchy-UUID attributes; site-based match entries have display issue in the GUI.
   - Note: "By Tag Rules" is not yet implemented and will be included in an upcoming release
+- Fix `sdwan_network_hierarchy_node` rejecting a `group` nested under a `region` parent with `Parent group '<name>' not found in network hierarchy`. A `region` can now parent a `group` (as well as a `site`); it still cannot parent another `region`.
+- Fix `sdwan_network_hierarchy_node`'s `address` attribute crashing with `Received unknown value, however the target type cannot handle unknown values` when set from a `for_each`-derived expression (e.g. `address = try(each.value.address, null)`). No change to the `address = { street = ..., ... }` syntax.
+- Mark `flow_active_timeout`, `flow_inactive_timeout`, `flow_refresh_time`, `flow_sampling_interval`, and `protocol` as `Required` on `sdwan_network_hierarchy_cflowd` to match SD-WAN Manager's API schema, which rejects a request omitting any of them
+- Fix `sdwan_network_hierarchy_cflowd` crashing with `Received unknown value, however the target type cannot handle unknown values` when `collectors` is set from a `for_each`-derived expression
+- Fix `sdwan_topology_group` and `sdwan_activate_topology_group` producing an unwanted re-activation right after `terraform import`, caused by the internal `feature_versions` bookkeeping attribute
+- Fix `sdwan_activate_topology_group` documentation subcategory: now grouped under "Topology Groups" instead of the generic resources section
 
 ## 0.11.4
 
