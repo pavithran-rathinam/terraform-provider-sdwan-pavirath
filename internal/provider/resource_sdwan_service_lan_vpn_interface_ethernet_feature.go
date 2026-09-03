@@ -912,7 +912,7 @@ func (r *ServiceLANVPNInterfaceEthernetProfileParcelResource) Schema(ctx context
 				Optional:            true,
 			},
 			"trustsec_trusted": schema.BoolAttribute{
-				MarkdownDescription: helpers.NewAttributeDescription("Indicates that the interface is trustworthy for CTS., Attribute conditional on (`trustsec_security_group_tag` being set and `port_channel_member_interface` not equal to `true` and `trustsec_enable_sgt_propogation` equal to `true` and SD-WAN Manager version `20.18.1` or higher) or (`trustsec_security_group_tag_variable` being set and `port_channel_member_interface` not equal to `true` and `trustsec_enable_sgt_propogation` equal to `true` and SD-WAN Manager version `20.18.1` or higher)").AddDefaultValueDescription("true").String,
+				MarkdownDescription: helpers.NewAttributeDescription("Indicates that the interface is trustworthy for CTS., Attribute conditional on (`trustsec_security_group_tag` being set and `port_channel_member_interface` not equal to `true` and `trustsec_enable_sgt_propogation` equal to `true` and `trustsec_propogate` equal to `true` and SD-WAN Manager version `20.18.1` or higher) or (`trustsec_security_group_tag_variable` being set and `port_channel_member_interface` not equal to `true` and `trustsec_enable_sgt_propogation` equal to `true` and `trustsec_propogate` equal to `true` and SD-WAN Manager version `20.18.1` or higher)").AddDefaultValueDescription("true").String,
 				Optional:            true,
 			},
 			"trustsec_enable_enforced_propogation": schema.BoolAttribute{

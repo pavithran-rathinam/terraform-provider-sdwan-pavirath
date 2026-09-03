@@ -1582,12 +1582,12 @@ func (data ServiceLANVPNInterfaceEthernet) toBody(ctx context.Context, ver *vers
 		}
 	}
 	if data.TrustsecTrusted.IsNull() {
-		if true && ((!(data.TrustsecSecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.TrustsecSecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
+		if true && ((!(data.TrustsecSecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && data.TrustsecPropogate.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.TrustsecSecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && data.TrustsecPropogate.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
 			body, _ = sjson.Set(body, path+"trustsec.trusted.optionType", "default")
 			body, _ = sjson.Set(body, path+"trustsec.trusted.value", true)
 		}
 	} else {
-		if true && ((!(data.TrustsecSecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.TrustsecSecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
+		if true && ((!(data.TrustsecSecurityGroupTag.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && data.TrustsecPropogate.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1")))) || (!(data.TrustsecSecurityGroupTagVariable.IsNull()) && !(data.PortChannelMemberInterface.ValueBool() == true) && data.TrustsecEnableSgtPropogation.ValueBool() == true && data.TrustsecPropogate.ValueBool() == true && ver.GreaterThanOrEqual(version.Must(version.NewVersion("20.18.1"))))) {
 			body, _ = sjson.Set(body, path+"trustsec.trusted.optionType", "global")
 			body, _ = sjson.Set(body, path+"trustsec.trusted.value", data.TrustsecTrusted.ValueBool())
 		}

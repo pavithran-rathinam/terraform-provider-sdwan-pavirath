@@ -174,7 +174,7 @@ func (r *ServiceSwitchportProfileParcelResource) Schema(ctx context.Context, req
 							Optional:            true,
 						},
 						"enable_dot1x": schema.BoolAttribute{
-							MarkdownDescription: helpers.NewAttributeDescription("Set 802.1x on off").AddDefaultValueDescription("false").String,
+							MarkdownDescription: helpers.NewAttributeDescription("Set 802.1x on off").AddDefaultValueDescription("true").String,
 							Optional:            true,
 						},
 						"port_control": schema.StringAttribute{

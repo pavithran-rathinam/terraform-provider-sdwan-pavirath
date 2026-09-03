@@ -683,12 +683,15 @@ attributes:
         - name: trustsec_security_group_tag
           value: ''
           negate: true
-          and: 
+          and:
             - name: port_channel_member_interface
               value: true
               type: Bool
               negate: true
             - name: trustsec_enable_sgt_propogation
+              value: true
+              type: Bool
+            - name: trustsec_propogate
               value: true
               type: Bool
             - type: MinVersion
@@ -696,12 +699,15 @@ attributes:
         - name: trustsec_security_group_tag_variable
           value: ''
           negate: true
-          and: 
+          and:
             - name: port_channel_member_interface
               value: true
               type: Bool
               negate: true
             - name: trustsec_enable_sgt_propogation
+              value: true
+              type: Bool
+            - name: trustsec_propogate
               value: true
               type: Bool
             - type: MinVersion

@@ -94,7 +94,7 @@ Optional:
   - Choices: `full`, `half`
 - `duplex_variable` (String) Variable name
 - `enable_dot1x` (Boolean) Set 802.1x on off
-  - Default value: `false`
+  - Default value: `true`
 - `enable_periodic_reauth` (Boolean) Enable Periodic Reauthentication
 - `enable_periodic_reauth_variable` (String) Variable name
 - `enable_voice` (Boolean) Enable Critical Voice VLAN
