@@ -108,6 +108,36 @@ func (r *TagResource) Configure(_ context.Context, req resource.ConfigureRequest
 
 // End of section. //template:end model
 
+// The device inventory carries the full device->tags mapping including tag ids.
+// From 20.18.4 the GET /v1/tags collection response reports "tagAssociation" as
+// an empty array (returning a "refCount" count instead), so it can no longer be
+// used to rebuild association state. One inventory request replaces what would
+// otherwise be one request per tag.
+func (r *TagResource) deviceTagAssociations(ctx context.Context, selfId string) (map[string]map[string]bool, error) {
+	res, err := r.client.Get("/system/device/vedges")
+	if err != nil {
+		return nil, err
+	}
+	assoc := make(map[string]map[string]bool)
+	for _, device := range res.Get("data").Array() {
+		deviceId := device.Get("uuid").String()
+		if deviceId == "" {
+			continue
+		}
+		for _, tag := range device.Get("tags").Array() {
+			tagId := tag.Get("id").String()
+			if tagId == "" || tagId == selfId {
+				continue
+			}
+			if assoc[tagId] == nil {
+				assoc[tagId] = make(map[string]bool)
+			}
+			assoc[tagId][deviceId] = true
+		}
+	}
+	return assoc, nil
+}
+
 func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan Tag
 
@@ -139,7 +169,13 @@ func (r *TagResource) Create(ctx context.Context, req resource.CreateRequest, re
 	plan.Id = types.StringValue(existingTags.Get("#(name==\"" + plan.Name.ValueString() + "\").id").String())
 
 	if len(plan.Devices.Elements()) > 0 {
-		body = plan.toBodyDeviceAssociationWithExistingTags(ctx, existingTags)
+		tagAssociations, err := r.deviceTagAssociations(ctx, plan.Id.ValueString())
+		if err != nil {
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tag associations (GET), got error: %s", err))
+			return
+		}
+
+		body = plan.toBodyDeviceAssociationWithExistingTags(ctx, tagAssociations)
 		res, err = r.client.Post("/v1/tags/associate", body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to associate devices to tag (POST), got error: %s, %s", err, res.String()))
@@ -206,13 +242,13 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 	defer r.updateMutex.Unlock()
 
 	if len(plan.Devices.Elements()) > 0 {
-		existingTags, err := r.client.Get(plan.getPath())
+		tagAssociations, err := r.deviceTagAssociations(ctx, plan.Id.ValueString())
 		if err != nil {
-			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tags (GET), got error: %s, %s", err, existingTags.String()))
+			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to retrieve existing tag associations (GET), got error: %s", err))
 			return
 		}
 
-		body := plan.toBodyDeviceAssociationWithExistingTags(ctx, existingTags)
+		body := plan.toBodyDeviceAssociationWithExistingTags(ctx, tagAssociations)
 		res, err := r.client.Post("/v1/tags/associate", body)
 		if err != nil {
 			resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Failed to associate devices to tag (POST), got error: %s, %s", err, res.String()))
@@ -251,6 +287,9 @@ func (r *TagResource) Update(ctx context.Context, req resource.UpdateRequest, re
 					itemChildBody, _ = sjson.Set(itemChildBody, "id", id.String())
 					itemChildBody, _ = sjson.Set(itemChildBody, "objectType", "DEVICE")
 				}
+			}
+			if itemChildBody == "" {
+				continue
 			}
 			itemBody, _ = sjson.SetRaw(itemBody, "objects.-1", itemChildBody)
 		}

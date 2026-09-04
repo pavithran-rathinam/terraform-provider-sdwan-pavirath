@@ -91,7 +91,7 @@ func (data Tag) toBodyDeviceAssociation(ctx context.Context) string {
 	return body
 }
 
-func (data Tag) toBodyDeviceAssociationWithExistingTags(ctx context.Context, existingTags gjson.Result) string {
+func (data Tag) toBodyDeviceAssociationWithExistingTags(ctx context.Context, tagAssociations map[string]map[string]bool) string {
 	body := ""
 	body, _ = sjson.Set(body, "data", []interface{}{})
 
@@ -111,21 +111,6 @@ func (data Tag) toBodyDeviceAssociationWithExistingTags(ctx context.Context, exi
 	touchedDevices := make(map[string]bool)
 	for d := range planDevices {
 		touchedDevices[d] = true
-	}
-
-	tagAssociations := make(map[string]map[string]bool)
-	for _, tag := range existingTags.Array() {
-		tagId := tag.Get("id").String()
-		if tagId == data.Id.ValueString() {
-			continue
-		}
-		tagAssociations[tagId] = make(map[string]bool)
-		if tagAssoc := tag.Get("tagAssociation"); tagAssoc.Exists() {
-			for _, assoc := range tagAssoc.Array() {
-				deviceId := assoc.Get("id").String()
-				tagAssociations[tagId][deviceId] = true
-			}
-		}
 	}
 
 	changed := true
