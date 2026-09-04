@@ -91,10 +91,13 @@ func (r *ServiceLANVPNProfileParcelResource) Schema(ctx context.Context, req res
 				Required:            true,
 			},
 			"vpn": schema.Int64Attribute{
-				MarkdownDescription: helpers.NewAttributeDescription("VPN").AddIntegerRangeDescription(1, 65527).String,
+				MarkdownDescription: helpers.NewAttributeDescription("VPN").AddIntegerRangesDescription([]helpers.IntRange{{Min: 1, Max: 511}, {Min: 513, Max: 65527}}).String,
 				Optional:            true,
 				Validators: []validator.Int64{
-					int64validator.Between(1, 65527),
+					int64validator.Any(
+						int64validator.Between(1, 511),
+						int64validator.Between(513, 65527),
+					),
 				},
 			},
 			"vpn_variable": schema.StringAttribute{
