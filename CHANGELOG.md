@@ -1,6 +1,27 @@
 ## 0.11.5 (unreleased)
 
 - Update provider documentation: refresh tested platform versions to 20.12/20.15/20.18, restructure guides into "Getting Started - Configuration and Policy Groups" (new, recommended) and "Getting Started - Classic Templates"
+- Bump `sdwan_service_lan_vpn_interface_ethernet_feature` schema to `20.18.0`
+- Bump `sdwan_service_routing_bgp_feature` schema to `20.18.0`
+- Bump `sdwan_service_routing_eigrp_feature` schema to `20.18.0`
+- Bump `sdwan_service_lan_vpn_feature` schema to `20.18.0`
+- Bump `sdwan_service_lan_vpn_interface_svi_feature` schema to `20.18.0`
+- Bump `sdwan_service_routing_ospf_feature` schema to `20.18.0`
+- Bump `sdwan_service_route_policy_feature` schema to `20.18.0`
+- Bump `sdwan_service_switchport_feature` schema to `20.18.0`
+- Bump `sdwan_service_wireless_lan_feature` schema to `20.18.0`
+- Bump `sdwan_service_ipv4_acl_feature` schema to `20.18.0`
+- Bump `sdwan_service_lan_vpn_interface_gre_feature` schema to `20.18.0`
+- Bump `sdwan_service_lan_vpn_interface_ipsec_feature` schema to `20.18.0`
+- Bump `sdwan_service_multicast_feature` schema to `20.18.0`
+- Bump `sdwan_service_object_tracker_feature` schema to `20.18.0`
+- Bump `sdwan_service_routing_ospfv3_ipv4_feature` schema to `20.18.0`
+- Bump `sdwan_service_routing_ospfv3_ipv6_feature` schema to `20.18.0`
+- Bump `sdwan_service_tracker_feature` schema to `20.18.0`
+- Bump `sdwan_service_ipv6_acl_feature` schema to `20.18.0`
+- Bump `sdwan_service_object_tracker_group_feature` schema to `20.18.0`
+- Bump `sdwan_service_tracker_group_feature` schema to `20.18.0`
+- Add  `access_list_id` and `interval` attributes for `auto_rp_announces` to `sdwan_service_multicast_feature` resource and data source (SD-WAN Manager 20.18+)
 - Add `sdwan_service_dual_router_ha_feature` resource and data source
 - Bump `sdwan_transport_cellular_profile_feature` schema to `20.18.0`
 - Bump `sdwan_transport_routing_bgp_feature` schema to `20.18.0`
